@@ -20,7 +20,7 @@ output "subnet_cidr" {
 
 variable "my_ami" {
   type    = string
-  default = "ami-0f5ee92e2d63afc18"
+  default = "ami-1234567890abcdefg"
 }
 
 
