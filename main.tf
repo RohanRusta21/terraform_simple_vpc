@@ -8,9 +8,9 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "main" {
-  count             = length(var.cidr_subnet)
+  for_each          = var.cidr_subnet
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.cidr_subnet[count.index]
+  cidr_block        = each.value
   availability_zone = "ap-south-1a"
 
   tags = {
@@ -30,7 +30,7 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_route_table" "my_rt" {
   vpc_id = aws_vpc.main.id
   tags = {
-	Name = "RT_Terraform"
+    Name = "RT_Terraform"
   }
   route {
     cidr_block = "0.0.0.0/0"
@@ -39,17 +39,20 @@ resource "aws_route_table" "my_rt" {
 }
 
 resource "aws_route_table_association" "my_rt_assoc" {
-  subnet_id      = aws_subnet.main[count.index]
+  for_each       = var.cidr_subnet
+  subnet_id      = aws_subnet.main[each.key].id
   route_table_id = aws_route_table.my_rt.id
 }
 
 
 resource "aws_instance" "example" {
+  for_each      = var.cidr_subnet
   ami           = var.my_ami
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.main[0]
+  subnet_id     = aws_subnet.main[each.key].id
 
   tags = {
     Name = "ec2_terraform"
   }
 }
+

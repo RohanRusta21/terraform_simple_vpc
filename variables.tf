@@ -9,18 +9,18 @@ output "cidr_value" {
 
 
 variable "cidr_subnet" {
-  type    = list(string)
+  type    = set(string)
   default = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
 output "subnet_cidr" {
-  value = var.cidr_subnet
+  value = join("\n", var.cidr_subnet)
 }
 
 
 variable "my_ami" {
   type    = string
-  default = "ami-1234567890abcdefg"
+  default = "ami-0f5ee92e2d63afc18"
 }
 
 
