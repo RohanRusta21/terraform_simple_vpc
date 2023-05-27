@@ -9,8 +9,8 @@ output "cidr_value" {
 
 
 variable "cidr_subnet" {
-  type    = string
-  default = "10.0.1.0/24"
+  type    = list(string)
+  default = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
 output "subnet_cidr" {

@@ -8,8 +8,9 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "main" {
+  count             = length(var.cidr_subnet)
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.cidr_subnet
+  cidr_block        = var.cidr_subnet[count.index]
   availability_zone = "ap-south-1a"
 
   tags = {
@@ -38,7 +39,7 @@ resource "aws_route_table" "my_rt" {
 }
 
 resource "aws_route_table_association" "my_rt_assoc" {
-  subnet_id      = aws_subnet.main.id
+  subnet_id      = aws_subnet.main[count.index]
   route_table_id = aws_route_table.my_rt.id
 }
 
@@ -46,7 +47,7 @@ resource "aws_route_table_association" "my_rt_assoc" {
 resource "aws_instance" "example" {
   ami           = var.my_ami
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.main.id
+  subnet_id     = aws_subnet.main[0]
 
   tags = {
     Name = "ec2_terraform"
